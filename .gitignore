@@ -2,3 +2,6 @@
 *.gif
 *~
 *.pyc
+output/*
+*.npy
+*.npy

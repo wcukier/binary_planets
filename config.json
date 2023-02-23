@@ -1,0 +1,14 @@
+{
+"m1":1,
+"m2":1,
+"d": 0.005,
+"e": 0,
+"phase": 0,
+"Omega": 0,
+"inc": 0,
+"n_log": 1000,
+"integrator": "whfast",
+"dt": 1e-4,
+"t_end": 1000,
+"name": "test"
+}

@@ -92,7 +92,7 @@ def save_log(log):
     elements, _ = log
     np.save("elements.npy", elements)
 
-def calc_moments(log, file="stats.npy"):
+def calc_moments(log, file=False):
     elements, _ = log
     n_log, n_particles, n_elements = elements.shape
     summary_stats = np.zeros((n_particles, n_elements, 4))
