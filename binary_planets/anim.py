@@ -4,10 +4,12 @@ Used to create animation of the n-body simulation
 """
 
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 import imageio
-
 
 
 def animate_separation(name, sim, t_start, t_end, n_frames=100):

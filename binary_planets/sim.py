@@ -45,6 +45,9 @@ def orbital_charcteristics(m1, m2, d, e=0, phase=0, Omega=0, inc=0):
     
     
 def get_period(m1, m2, d, e=0, phase=0):
+    m1=m1*MASS_E/MASS_SUN
+    m2=m2*MASS_E/MASS_SUN
+    
     r1 = m2/(m1+m2)*d
     r2 = m1/(m1+m2)*d
     
@@ -67,6 +70,7 @@ def init_binary_planet(m1, m2, d, e=0, phase=0, Omega=0, inc=0, n_log=1000,
                        integrator="whfast", dt=1e-4):
 
     sim=rebound.Simulation()
+    print(sim.status())
     sim.units = ('yr', 'AU', 'Msun')
     sim.integrator = integrator
     sim.dt = dt

@@ -25,14 +25,17 @@ if __name__ == "__main__":
 
 
     i = 1
-    if not os.path.exists(f"output/{config['name']}"):
+    try:
         os.mkdir(f"output/{config['name']}")
+    except:
+        pass
     while(True):
-        if not os.path.exists(f"output/{config['name']}/{i}"):
-            config["name"] = f"{config['name']}/{i}"
-            os.mkdir(f"output/{config['name']}")
+        try:
+            os.mkdir(f"output/{config['name']}/{i}")
             break
-        i += 1
+        except:
+            i += 1
+    config["name"] = f"{config['name']}/{i}"
 
     with open(f"output/{config['name']}/run_notes.out", 'w+') as run_notes:
         run_notes.write(f"{sys.argv}\n")
@@ -47,19 +50,37 @@ if __name__ == "__main__":
                                 config["n_log"], config["integrator"], 
                                 config["dt"])
     
+    E0 = sim.energy()
+    Lx0, Ly0, Lz0, = sim.angular_momentum()
+    
     t0 = time.time()
     simulate(sim, log, config["t_end"])
     t1 = time.time()
 
     save_log(log, f"output/{config['name']}/elements.npy")
 
-    with open(f"output/{config['name']}/summary.out", 'a+') as summary:
+    E1 = sim.energy()
+    Lx1, Ly1, Lz1, = sim.angular_momentum()
+
+    E_err = (E0 - E1)/E0
+    L_err = np.sqrt(((Lx0 - Lx1)**2 + (Ly0 - Ly1)**2 + (Lz0 - Lz1)**2)
+                    /(Lx0**2+ Ly0**2 + Lx0**2+1e-20))
+
+    with open(f"output/{config['name']}/run_notes.out", 'a+') as summary:
         summary.write(f"Time elapsed: {t1-t0}\n")
+        
+        summary.write(f"Energy Error: {E_err:.2e}\tE_i: {E0:.2e}\
+            \tE_f: {E1:.2e}\n")
+        
+        summary.write(f"Angular Mom Err: {L_err:.2e}\t\
+                      L_i: ({Lx0:.2e}, {Ly0:.2e}, {Lz0:.2e})\t\
+                          L_f: ({Lx1:.2e}, {Ly1:.2e}, {Lz1:.2e})\n")
+        
         summary.write("\nStatistical Moments:\n")
         summary.write(f"{calc_moments(log)}")
         
     T = get_period(config["m1"], config["m2"], config["d"], 
                    config["e"], config["phase"])
     print(T)
-    animate_separation(f"output/{config['name']}/end", sim, 
-                       config['t_end'], config['t_end']+.2)
+    # animate_separation(f"output/{config['name']}/end", sim, 
+    #                    config['t_end'], config['t_end']+.2)
