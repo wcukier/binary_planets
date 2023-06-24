@@ -4,4 +4,5 @@
 *.pyc
 output/*
 *.npy
-*.npy
+logs/*
+old_logs/*

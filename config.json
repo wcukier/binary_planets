@@ -9,6 +9,7 @@
 "n_log": 1000,
 "integrator": "whfast",
 "dt": 1e-4,
-"t_end": 1000,
-"name": "test"
+"t_end": 100000,
+"name": "test",
+"a": 1
 }

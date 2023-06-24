@@ -2,6 +2,7 @@ import numpy as np
 import rebound
 from .constants import *
 from .log import *
+import sys
 
 def orbital_charcteristics(m1, m2, d, e=0, phase=0, Omega=0, inc=0):
     r1 = m2/(m1+m2)*d
@@ -65,34 +66,45 @@ def get_velocity(r, a , e, T):
     return 2* np.pi * (a**2) * np.sqrt(1-e**2)/(r*T)
 
 
+def get_hill_radius(a, e, m):
+    return a * (1-e) * ((m*MASS_E)/(3*MASS_SUN))**(1/3)
 
-def init_binary_planet(m1, m2, d, e=0, phase=0, Omega=0, inc=0, n_log=1000, 
+
+def init_binary_planet(m_star, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=0, n_log=1000, 
                        integrator="whfast", dt=1e-4):
 
     sim=rebound.Simulation()
-    print(sim.status())
     sim.units = ('yr', 'AU', 'Msun')
     sim.integrator = integrator
     sim.dt = dt
     sim.ri_whfast.safe_mode = 0
     sim.ri_whfast.corrector = 11
-    sim.add(m=1)
+    sim.add(m=m_star)
     sim.move_to_hel()
+    
+    inc = np.pi - inc
 
     m1=m1*MASS_E/MASS_SUN
     m2=m2*MASS_E/MASS_SUN
 
-    [x1, v1], [x2, v2] = orbital_charcteristics(m1, m2, d, inc=inc, e=e, 
-                                                phase=phase, Omega=Omega)
+    print("WARNING-- NO BINARY PLANET", file = sys.stderr)
 
 
-    sim.add(m=m1, 
-            x=1+x1[0], y=x1[1], z=x1[2], 
-            vx=v1[0],vy=2*np.pi+v1[1], vz=v1[2])
+    # [x1, v1], [x2, v2] = orbital_charcteristics(m1, m2, d, inc=inc, e=e, 
+    #                                             phase=phase, Omega=Omega)
+
+    # [[x0, y0, z0], [vx0, vy0, vz0]], _ = orbital_charcteristics(0, m1+m2, a, 
+    #                                                             inc=np.pi,
+    #                                                             e=e_sys)
+
+
+    # sim.add(m=m1, 
+    #         x=x0+x1[0], y=y0+x1[1], z=z0+x1[2], 
+    #         vx=vx0+v1[0],vy=vy0+v1[1], vz=vz0+v1[2])
     
-    sim.add(m=m2,
-            x=1+x2[0], y=x2[1], z=x2[2], 
-            vx=v2[0], vy=2*np.pi+v2[1], vz=v2[2])
+    # sim.add(m=m2,
+    #         x=x0+x2[0], y=y0+x2[1], z=z0+x2[2], 
+    #         vx=vx0+v2[0], vy=vy0+v2[1], vz=vz0+v2[2])
 
     sim.move_to_com()
     log = init_log(n_log, 3)
@@ -100,12 +112,22 @@ def init_binary_planet(m1, m2, d, e=0, phase=0, Omega=0, inc=0, n_log=1000,
     
     return sim, log
 
+
+def init_single_planet(sim, m, a, e, inc, omega, Omega):
+    sim.move_to_hel()
+    mass = m * MASS_E/MASS_SUN
+    sim.add(m=mass, a=a, e=e, inc=inc, omega=omega, Omega=Omega)
+    sim.move_to_com()
+
 def simulate(sim, log, t_end):
     n_log = get_log_len(log)
     
     for t in np.linspace(0, t_end, n_log):
         sim.integrate(t, exact_finish_time=0)
-        log = log_elements(sim, log)
+        log, halt = log_elements(sim, log)
+        if halt:
+            print("Unstable system.  Stopping...")
+            break
     
     return sim, log
 

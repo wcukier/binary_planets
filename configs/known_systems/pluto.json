@@ -1,0 +1,15 @@
+{
+    "m1":0.002192,
+    "m2":2.71e-4,
+    "d": 1.3096e-4,
+    "e": 0,
+    "a": 39.48,
+    "phase": 0,
+    "Omega": 0,
+    "inc": 0,
+    "n_log": 1000,
+    "integrator": "leapfrog",
+    "dt": 1e-2,
+    "t_end": 10000000,
+    "name": "known_systems/pluto"
+    }

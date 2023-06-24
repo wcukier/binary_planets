@@ -1,0 +1,15 @@
+{
+    "m1":1,
+    "m2":0.0123,
+    "d": 0.00257,
+    "e": 0.0549,
+    "a": 1,
+    "phase": 0,
+    "Omega": 0,
+    "inc": 0.08988446,
+    "n_log": 1000,
+    "integrator": "leapfrog",
+    "dt": 0.001,
+    "t_end": 1000000,
+    "name": "known_systems/earth"
+    }

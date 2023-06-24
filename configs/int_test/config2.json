@@ -1,0 +1,14 @@
+{
+"m1":1,
+"m2":1,
+"d": 0.005,
+"e": 0,
+"phase": 0,
+"Omega": 0,
+"inc": 0,
+"n_log": 1000,
+"integrator": "ias15",
+"dt": 1e-3,
+"t_end": 100000,
+"name": "int_test"
+}
