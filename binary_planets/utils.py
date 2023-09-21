@@ -44,7 +44,9 @@ def get_eccen(sys):
         if np.isnan(mids[i]):
             x = np.random.uniform(E_CDF_MIN, E_CDF_MAX)
             es[i] = e_func(x)
+            e[i]=0
         else:
+            # e[i] = 0
             while True:
                 es[i] = draw_rv(mids[i], los[i], his[i])
                 if es[i]>0: break
@@ -52,25 +54,25 @@ def get_eccen(sys):
     return es
 
 def get_inc(sys):
-    mids = np.array(sys["inc"])
+        mids = np.array(sys["inc"])
     
-    if np.all(np.isnan(mids)):
-        return np.ones(len(mids)) * 90
+    # if np.all(np.isnan(mids)):
+        return np.ones(len(mids)) *np.pi/2
     
-    incs = np.zeros(len(mids))
-    los = sys["inc_lower"]
-    his = sys["inc_upper"]
+    # incs = np.zeros(len(mids))
+    # los = sys["inc_lower"]
+    # his = sys["inc_upper"]
     
-    mean = np.mean(mids[~np.isnan(mids)])
-    std = np.std(mids[~np.isnan(mids)])
+    # mean = np.mean(mids[~np.isnan(mids)])
+    # std = np.std(mids[~np.isnan(mids)])
     
-    for i in range(len(mids)):
-        if np.isnan(mids[i]):
-            incs[i] = np.random.normal(mean, std)
-        else:
-            incs[i] = draw_rv(mids[i], los[i], his[i])
+    # for i in range(len(mids)):
+    #     if np.isnan(mids[i]):
+    #         incs[i] = np.random.normal(mean, std)
+    #     else:
+    #         incs[i] = draw_rv(mids[i], los[i], his[i])
             
-    return incs
+    # return incs * np.pi/180
 
 def get_mass(sys):
     mass_mid = sys["mass"]

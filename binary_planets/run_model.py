@@ -10,7 +10,7 @@ import os
 import datetime
 import corner
 
-def run_model(config):
+def run_model(config, mode):
     with open(f"output/{config['name']}/run_notes.out", 'w+') as run_notes:
         run_notes.write(f"{sys.argv}\n")
         run_notes.write(f"Run start time: {datetime.datetime.now()}\n")
@@ -18,20 +18,44 @@ def run_model(config):
             run_notes.write(f"{key}: {config[key]}\n")
         run_notes.write("*************************************************\n\n")
 
-    binary = config["binary"]
+        binary = config["binary"]
+        n_secondary = config["n_secondary"]
+
+        n_particles = n_secondary + 1 
+        if mode==2: n_particles += 2
+
+        sim, log = init_sim(config.get("m_star", 1), 
+                            config["n_log"],
+                            config["integrator"],
+                            config["dt"], 
+                            n_particles)
+
+        if mode==2:
+            sim  = init_binary_planet(  binary["m1"],
+                                        binary["m2"],
+                                        binary["d"], 
+                                        binary["a"], 
+                                        binary["e"], 
+                                        binary["e_sys"],
+                                        binary["phase"], 
+                                        binary["Omega"],
+                                        binary["inc"]   )
+            
     
-    sim, log = init_binary_planet(config.get("m_star", 1), binary["m1"], binary["m2"],
-                                  binary["d"], binary["a"], binary["e"], binary["e_sys"],
-                                binary["phase"], binary["Omega"], binary["inc"], 
-                                config["n_log"], config["integrator"], 
-                                config["dt"])
-  
-    n_secondary = config.get("n_secondary", 0)
-    for i in range(int(n_secondary)):
-        sec = config[f"secondary_{i}"]
-        init_single_planet(sim, sec["m"], sec["a"], sec["e"], sec["inc"],
-                           sec["omega"], sec["Omega"])
-   
+        n_secondary = config["n_secondary"]
+        for i in range(int(n_secondary)):
+            sec = config[f"secondary_{i}"]
+            sim = init_single_planet(sim,
+                                     sec["m"], 
+                                     sec["a"], 
+                                     sec["e"], 
+                                     sec["inc"],
+                                     sec["omega"],
+                                     sec["Omega"])
+            
+            run_notes.write(f"Added secondary_{i}.\n")
+            run_notes.write(f"# of particles: sim")
+    
     
     with open(f"output/{config['name']}/config.json", "w+") as cf:
         json.dump(config, cf)
@@ -40,7 +64,7 @@ def run_model(config):
     Lx0, Ly0, Lz0, = sim.angular_momentum()
     
     t0 = time.time()
-    simulate(sim, log, config["t_end"])
+    simulate(sim, log, config["t_end"], mode)
     t1 = time.time()
 
     save_log(log, f"output/{config['name']}/elements.npy")
@@ -67,10 +91,10 @@ def run_model(config):
     sum_data[3, 0] = L_err
     sum_data[4, :3] = [Lx0, Ly0, Lz0]
     sum_data[5, :3] = [Lx1, Ly1, Lz1]
-    sum_data[6:8, :] = first_i
-    sum_data[8:10, :] = first_f
-    sum_data[10:12, :] = second_i
-    sum_data[12:14, :] = second_f
+    sum_data[6:8, :] = first_i[:2]
+    sum_data[8:10, :] = first_f[:2]
+    sum_data[10:12, :] = second_i[:2]
+    sum_data[12:14, :] = second_f[:2]
     sum_data[14:19, :4] = moments[0]
     sum_data[19:24, :4] = moments[1]
     sum_data[24, :] = [o.a, o.e, o.inc, o.Omega, o.omega]

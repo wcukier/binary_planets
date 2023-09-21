@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import describe
 import corner
 from matplotlib import pyplot as plt
-
+from os import sys
 
 def init_log(n_log, n_particles):
     return np.zeros((n_log, n_particles-1, 6)), 0
@@ -10,15 +10,17 @@ def init_log(n_log, n_particles):
 def get_log_len(log):
     return log[0].shape[0]
 
-def log_elements(sim, log):
+def log_elements(sim, log, mode):
     sim.status()
     particles = sim.particles
     elements, t_step = log
     n_log, n_particles, _ = elements.shape
+    n_particles=len(particles)
+    print(f"n_particles: {n_particles}")
+
     halt = 0
     for i in range(n_particles)[1:]:
-        p = particles[i+1]
-        
+        p = particles[i]
         if i == 0:
             primary = particles[2]
         # elif i==1:
@@ -27,12 +29,16 @@ def log_elements(sim, log):
             primary = particles[0]
             
         o = p.calculate_orbit(primary=primary)
-        elements[t_step, i] = [o.a, o.e, o.inc, o.Omega, o.omega, sim.t]
-        if o.a<0: halt += 1
+        elements[t_step, i-1] = [o.a, o.e, o.inc, o.Omega, o.omega, sim.t]
+        
+        if p.m > 1e-15:
+            if (o.a < 0) or (o.a > 5) or (o.e < 0) or (o.e > 1):
+                halt +=1
+
     t_step += 1
     # halt = o.a < 0
     print("WARNING, binary bound check off")
-    return [elements, t_step], halt>0
+    return [elements, t_step], halt
 
 def save_log(log, file="output/elements.npy"):
     elements, _ = log

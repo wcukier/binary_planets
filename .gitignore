@@ -3,6 +3,7 @@
 *~
 *.pyc
 output/*
+old_output/*
 *.npy
 logs/*
 old_logs/*
