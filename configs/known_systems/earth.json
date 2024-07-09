@@ -10,7 +10,7 @@
         "Omega": 0,
         "inc": 0},
 
-    "n_secondary": 2,
+    "n_secondary": 0,
     "secondary_0":{
         "m": 1,
         "a":0.3,

@@ -25,7 +25,8 @@ if __name__ == "__main__":
 
     r_hill = get_hill_radius(config["binary"]["a"], 
                              config["binary"]["e"], 
-                             config["binary"]["m1"])
+                             config["binary"]["m1"],
+                             1)
    
     # jupiter_sep = np.linspace(.85, 0.05, 96)[int(run_num)]
     
@@ -62,25 +63,25 @@ if __name__ == "__main__":
     name = config['name']
     ds = [1]
     es = [1]
-    for i in range(400):
+    for i in range(1):
         # d = ds[int(i % len(ds))]
         # e = es[int(i / len(ds))]
         # # config["d"] = d
         # # config["e"] = e
 
-        config["binary"]["d"] = np.random.uniform(0.05, 1.0) * r_hill
-        config["binary"]["e"] = np.random.uniform(0.0, 0.2)
-        config["binary"]["inc"] = np.random.uniform(-0.25, 0.25)
-        config["binary"]["e_sys"] = np.random.uniform(0.0, 0.2)
+        # config["binary"]["d"] = np.random.uniform(0.05, 1.0) * r_hill
+        # config["binary"]["e"] = np.random.uniform(0.0, 0.2)
+        # config["binary"]["inc"] = np.random.uniform(-0.25, 0.25)
+        # config["binary"]["e_sys"] = np.random.uniform(0.0, 0.2)
 
-        inc = np.random.uniform(-0.25, 0.25)
+        # inc = np.random.uniform(-0.25, 0.25)
         
-        config["secondary_0"]["omega"] = np.random.uniform(-np.pi, np.pi)
-        config["secondary_0"]["Omega"] = np.random.uniform(-np.pi, np.pi)
-        config["secondary_0"]["inc"] = inc + np.random.uniform(-0.25, 0.25)
-        config["secondary_1"]["omega"] = np.random.uniform(-np.pi, np.pi)
-        config["secondary_1"]["Omega"] = np.random.uniform(-np.pi, np.pi)
-        config["secondary_1"]["inc"] = inc + np.random.uniform(-0.25, 0.25)
+        # config["secondary_0"]["omega"] = np.random.uniform(-np.pi, np.pi)
+        # config["secondary_0"]["Omega"] = np.random.uniform(-np.pi, np.pi)
+        # config["secondary_0"]["inc"] = inc + np.random.uniform(-0.25, 0.25)
+        # config["secondary_1"]["omega"] = np.random.uniform(-np.pi, np.pi)
+        # config["secondary_1"]["Omega"] = np.random.uniform(-np.pi, np.pi)
+        # config["secondary_1"]["inc"] = inc + np.random.uniform(-0.25, 0.25)
         
         
         # separation = np.random.uniform(.15, .3)
@@ -88,25 +89,25 @@ if __name__ == "__main__":
         # config["secondary_0"]["a"] = 1 +(separation * contrast)
         # config["secondary_1"]["a"] = 1 - (separation)
 
-        config["secondary_0"]["a"] = np.random.uniform(1, 1.5)
-        config["secondary_1"]["a"] = np.random.uniform(0.5, 1)
+        # config["secondary_0"]["a"] = np.random.uniform(1, 1.5)
+        # config["secondary_1"]["a"] = np.random.uniform(0.5, 1)
 
 
-        mass = (2 ** np.random.uniform(np.log2(0.1), np.log2(20))) * 2
-        m1 = mass * np.random.uniform(0.2, 0.8)
-        m2 = mass - m1
+        # mass = (2 ** np.random.uniform(np.log2(0.1), np.log2(20))) * 2
+        # m1 = mass * np.random.uniform(0.2, 0.8)
+        # m2 = mass - m1
 
-        config["secondary_0"]["m"] = m1
-        config["secondary_1"]["m"] = m2
+        # config["secondary_0"]["m"] = m1
+        # config["secondary_1"]["m"] = m2
         
-        m_p = 2 ** np.random.uniform(np.log2(0.05), np.log2(10))
-        q = np.random.uniform(0.5, 1)
-        m2 = m1 * (1 - q)/q
+        # m_p = 2 ** np.random.uniform(np.log2(0.05), np.log2(10))
+        # q = np.random.uniform(0.5, 1)
+        # m2 = m1 * (1 - q)/q
         
-        config["binary"]["m1"] = m_p
-        config["binary"]["m2"] = m2
+        # config["binary"]["m1"] = m_p
+        # config["binary"]["m2"] = m2
         
-        config['name'] = name 
+        # config['name'] = name 
 
         i = 1
         try:
@@ -121,4 +122,4 @@ if __name__ == "__main__":
                 i += 1
         config["name"] = f"{config['name']}/{i}"
         
-        run_model(config)
+        run_model(config, 2)

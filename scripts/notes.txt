@@ -1,0 +1,6 @@
+- Graph of inclination bin vs surviaval fraction
+- Fig 3, just show injected Planet
+- Fig 4, identify co-variences
+- Initial vs surviving populations
+- Median (over time) + standard deviation of parameters
+- 

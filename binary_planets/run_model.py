@@ -10,7 +10,8 @@ import os
 import datetime
 import corner
 
-def run_model(config, mode):
+
+def run_model(config, mode, debug=0):
     with open(f"output/{config['name']}/run_notes.out", 'w+') as run_notes:
         run_notes.write(f"{sys.argv}\n")
         run_notes.write(f"Run start time: {datetime.datetime.now()}\n")
@@ -31,7 +32,8 @@ def run_model(config, mode):
                             n_particles)
 
         if mode==2:
-            sim  = init_binary_planet(  binary["m1"],
+            sim  = init_binary_planet(  sim,  
+                                        binary["m1"],
                                         binary["m2"],
                                         binary["d"], 
                                         binary["a"], 
@@ -39,7 +41,9 @@ def run_model(config, mode):
                                         binary["e_sys"],
                                         binary["phase"], 
                                         binary["Omega"],
-                                        binary["inc"]   )
+                                        binary["inc"],
+                                        binary["bin_inc"]
+                                        )
             
     
         n_secondary = config["n_secondary"]
@@ -62,6 +66,9 @@ def run_model(config, mode):
     
     E0 = sim.energy()
     Lx0, Ly0, Lz0, = sim.angular_momentum()
+    
+    if debug == 1:
+        return sim
     
     t0 = time.time()
     simulate(sim, log, config["t_end"], mode)
@@ -101,30 +108,30 @@ def run_model(config, mode):
     np.save(f"output/{config['name']}/summary.npy", sum_data)
 
 
-    with open(f"output/{config['name']}/run_notes.out", 'a+') as summary:
-        summary.write(f"Time elapsed: {t1-t0}\n")
+    # with open(f"output/{config['name']}/run_notes.out", 'a+') as summary:
+    #     summary.write(f"Time elapsed: {t1-t0}\n")
         
-        summary.write(f"Energy Error: {E_err:.2e}\tE_i: {E0:.2e}\
-            \tE_f: {E1:.2e}\n")
+    #     summary.write(f"Energy Error: {E_err:.2e}\tE_i: {E0:.2e}\
+    #         \tE_f: {E1:.2e}\n")
         
-        summary.write(f"Angular Mom Err: {L_err:.2e}\t\
-                      L_i: ({Lx0:.2e}, {Ly0:.2e}, {Lz0:.2e})\t\
-                          L_f: ({Lx1:.2e}, {Ly1:.2e}, {Lz1:.2e})\n")
+    #     summary.write(f"Angular Mom Err: {L_err:.2e}\t\
+    #                   L_i: ({Lx0:.2e}, {Ly0:.2e}, {Lz0:.2e})\t\
+    #                       L_f: ({Lx1:.2e}, {Ly1:.2e}, {Lz1:.2e})\n")
         
-        summary.write("\nStatistical Moments:\n")
-        summary.write(f"{moments}\n")
-        summary.write("\n====Derivatives====\n")
-        summary.write(f"Initial first derivative: {first_i}\n")
-        summary.write(f"Final first derivative: {first_f}\n")
-        summary.write(f"Initial second derivative: {second_i}\n")
-        summary.write(f"Final second derivative: {second_f}\n")
+    #     summary.write("\nStatistical Moments:\n")
+    #     summary.write(f"{moments}\n")
+    #     summary.write("\n====Derivatives====\n")
+    #     summary.write(f"Initial first derivative: {first_i}\n")
+    #     summary.write(f"Final first derivative: {first_f}\n")
+    #     summary.write(f"Initial second derivative: {second_i}\n")
+    #     summary.write(f"Final second derivative: {second_f}\n")
 
         
-        o = sim.particles[2].calculate_orbit(primary=sim.particles[1])
-        summary.write(f"Binary system orbital elements: a:{o.a}, e:{o.e}\n")
+    #     o = sim.particles[2].calculate_orbit(primary=sim.particles[1])
+    #     summary.write(f"Binary system orbital elements: a:{o.a}, e:{o.e}\n")
     
     del sim, log
-
+    return None
 
         
     # plot_corner(log, f"output/{config['name']}/corner.png")

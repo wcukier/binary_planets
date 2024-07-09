@@ -8,6 +8,9 @@ def orbital_charcteristics(m1, m2, d, e=0, phase=0, Omega=0, inc=0):
     r1 = m2/(m1+m2)*d
     r2 = m1/(m1+m2)*d
     
+    print(f"m1: {m1}, m2: {m2}")
+
+    
     a1 = get_semi_major(r1, e, phase)
     a2 = get_semi_major(r2, e, phase)
 
@@ -38,6 +41,7 @@ def orbital_charcteristics(m1, m2, d, e=0, phase=0, Omega=0, inc=0):
     
     v_hat1 = v_dir1/np.linalg.norm(v_dir1)
     v_hat2 = v_dir2/np.linalg.norm(v_dir2)
+    
     
     v_vec1 = v_hat1 * v1
     v_vec2 = v_hat2 * v2
@@ -85,9 +89,10 @@ def init_sim(m_star, n_log=1000, integrator="whfast", dt=1e-4, n_particles=2):
      
 
 
-def init_binary_planet(sim, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=0):
+def init_binary_planet(sim, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=0, bin_inc=0):
 
     inc = np.pi - inc
+    bin_inc = np.pi - bin_inc
 
     m1=m1*MASS_E/MASS_SUN
     m2=m2*MASS_E/MASS_SUN
@@ -96,9 +101,16 @@ def init_binary_planet(sim, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=
     [x1, v1], [x2, v2] = orbital_charcteristics(m1, m2, d, inc=inc, e=e, 
                                                 phase=phase, Omega=Omega)
 
-    [[x0, y0, z0], [vx0, vy0, vz0]], _ = orbital_charcteristics(0, m1+m2, a, 
-                                                                inc=np.pi,
+    _, [[x0, y0, z0], [vx0, vy0, vz0]] = orbital_charcteristics(1, m1+m2, a, 
+                                                                inc=bin_inc,
                                                                 e=e_sys)
+    print(f"a: {a}")
+    print(f"inc: {inc}\tbin_inc: {bin_inc}")
+    print("sys: ",[[x0, y0, z0], [vx0, vy0, vz0]])
+    print("m1: ",x1, v1)
+    print("m2: ",x2, v2)
+
+
 
     sim.add(m=m1, 
             x=x0+x1[0], y=y0+x1[1], z=z0+x1[2], 
@@ -112,7 +124,7 @@ def init_binary_planet(sim, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=
 
 
 def init_single_planet(sim, m, a, e, inc, omega, Omega):
-    inc = np.pi-inc
+    # inc = np.pi-inc
     sim.move_to_hel()
     mass = m * MASS_E/MASS_SUN
     sim.add(m=mass, a=a, e=e, inc=inc, omega=omega, Omega=Omega)

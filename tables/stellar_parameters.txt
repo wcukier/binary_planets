@@ -1,0 +1,50 @@
+System & Stellar Mass Prior ($M_\odot$) & Citation\hline
+HD 108236 & $U(0.820, 0.920)$ & \citet{bonfanti_cheops_2021}\\
+HD 191939 & $U(0.770, 0.850)$ & \citet{lubin_tess-keck_2022}\\
+HD 23472 & $U(0.640, 0.700)$ & \citet{barros_hd_2022}\\
+K2-133 & $U(0.450, 0.470)$ & \citet{wells_validation_2019}\\
+K2-138 & $U(0.920, 0.960)$ & \citet{lopez_exoplanet_2019}\\
+K2-266 & $U(0.660, 0.720)$ & \citet{rodriguez_compact_2018}\\
+K2-285 & $U(0.810, 0.850)$ & \citet{palle_detection_2019}\\
+K2-32 & $U(0.810, 0.850)$ & \citet{lillo-box_masses_2020}\\
+K2-72 & $U(0.180, 0.350)$ & \citet{dressing_characterizing_2017}\\
+KOI-94 & $U(1.230, 1.330)$ & \citet{weiss_mass_2013}\\
+Kepler-102 & $U(0.780, 0.820)$ & \citet{bonomo_cold_2023}\\
+Kepler-107 & $U(1.210, 1.270)$ & \citet{bonomo_cold_2023}\\
+Kepler-11 & $U(0.930, 0.990)$ & \citet{lissauer_all_2013}\\
+Kepler-150 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-167 & $U(0.750, 0.810)$ & \citet{chachan_kepler-167e_2022}\\
+Kepler-169 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-172 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-186 & $U(0.420, 0.540)$ & \citet{quintana_earth-sized_2014}\\
+Kepler-197 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-20 & $U(0.880, 0.980)$ & \citet{bonomo_cold_2023}\\
+Kepler-208 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-215 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-220 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-221 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-224 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-235 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-24 & $U(0.890, 1.140)$ & \citet{ford_transit_2012}\\
+Kepler-251 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-256 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-265 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-286 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-292 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-296 & $U(0.410, 0.570)$ & \citet{barclay_five_2015}\\
+Kepler-299 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-306 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-32 & $U(0.530, 0.630)$ & \citet{fabrycky_transit_2012}\\
+Kepler-33 & $U(1.170, 1.350)$ & \citet{lissauer_almost_2012}\\
+Kepler-341 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-402 & Emperical$^*$ &\citet{rowe_validation_2014}\\
+Kepler-444 & $U(0.720, 0.800)$ & \citet{campante_ancient_2015}\\
+Kepler-62 & $U(0.670, 0.710)$ & \citet{borucki_kepler-62_2013}\\
+Kepler-79 & $U(1.130, 1.210)$ & \citet{jontof-hutter_kepler-79s_2014}\\
+Kepler-82 & $U(0.880, 0.940)$ & \citet{freudenthal_kepler_2019}\\
+TOI-1246 & $U(0.840, 0.900)$ & \citet{turtelboom_tess-keck_2022}\\
+TOI-178 & $U(0.620, 0.680)$ & \citet{leleu_six_2021}\\
+TOI-561 & $U(0.770, 0.850)$ & \citet{lacedelli_investigating_2022}\\
+TOI-700 & $U(0.390, 0.430)$ & \citet{gilbert_second_2023}\\
+TRAPPIST-1 & Emperical$^*$ &\citet{agol_refining_2021}\\
+V1298 Tau & $U(1.050, 1.150)$ & \citet{david_four_2019}
