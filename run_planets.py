@@ -13,7 +13,7 @@ from multiprocessing import Pool
 global config
 global mode
 global pl_num
-compact_sys = np.load("data/compact_systems_run_composite.npy", allow_pickle=True)
+compact_sys = np.load("data/compact_systems_run_composite_good.npy", allow_pickle=True)
 # compact_sys = np.load("data/TOI-178.npy", allow_pickle=True)
 # compact_sys = np.load("data/Kepler-11.npy", allow_pickle=True)
 n_sys = len(compact_sys) 
@@ -149,6 +149,6 @@ if __name__ == "__main__":
         raise()
 
     with Pool() as p:
-        p.map(one_run, range(0, 10000))
+        p.map(one_run, range(0, 2000))
     
         
