@@ -4,7 +4,9 @@
 *.pyc
 output/*
 old_output/*
-*.npy
 logs/*
 old_logs/*
 .old_conda/*
+*.eps
+.DS_Store
+*.pdf

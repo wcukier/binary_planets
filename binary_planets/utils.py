@@ -44,8 +44,8 @@ def get_eccen(sys):
     for i in range(len(es)):
         if (np.isnan(mids[i])) + np.isnan(los[i]) + np.isnan(his[i]):
             x = np.random.uniform(E_CDF_MIN, E_CDF_MAX)
-            es[i] = e_func(x)
-            e[i]=0
+            # es[i] = e_func(x)
+            es[i]=0
         else:
             # e[i] = 0
             while True:
