@@ -28,7 +28,7 @@ def log_elements(sim, log, mode):
         else:
             primary = particles[0]
             
-        o = p.calculate_orbit(primary=primary)
+        o = p.orbit(primary=primary)
         elements[t_step, i-1] = [o.a, o.e, o.inc, o.Omega, o.omega, sim.t]
         
         if p.m > 1e-15:

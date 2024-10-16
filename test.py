@@ -83,7 +83,7 @@ def log_elements(sim, log):
     n_log, n_particles, _ = elements.shape
     for i in range(n_particles):
         p = particles[i+1]
-        o = p.calculate_orbit(primary=particles[0])
+        o = p.orbit(primary=particles[0])
         elements[t_step, i] = [o.a, o.e, o.inc, o.Omega, o.omega]
     t_step += 1
     return elements, t_step
@@ -184,7 +184,7 @@ op.fig.savefig("initial_orbit.png")
 
 print("Initial Orbital Elements")
 for p in sim.particles[2:]:
-    o = p.calculate_orbit(primary=sim.particles[1])
+    o = p.orbit(primary=sim.particles[1])
     print(f"a:{o.a}, e:{o.e}")
 
 # animate_separation("start", sim, 0, 3) 
@@ -207,7 +207,7 @@ op.fig.savefig("final_orbit.png")
 
 print("\nFinal Orbital Elements")
 for p in sim.particles[2:]:
-    o = p.calculate_orbit(primary=sim.particles[1])
+    o = p.orbit(primary=sim.particles[1])
     print(f"a:{o.a}, e:{o.e}")
 animate_separation("end", sim, t_end, t_end+.4)
 

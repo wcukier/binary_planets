@@ -8,7 +8,6 @@ import json
 import time
 import os
 import datetime
-import corner
 
 
 def run_model(config, mode, debug=0):
@@ -87,10 +86,10 @@ def run_model(config, mode, debug=0):
     moments = calc_moments(log)
     
     try:
-        o = sim.particles[2].calculate_orbit(primary=sim.particles[1])
+        o = sim.particles[2].orbit(primary=sim.particles[1])
     except Exception as e:
         print(e)
-        o = sim.particles[2].calculate_orbit(primary=sim.particles[0])
+        o = sim.particles[2].orbit(primary=sim.particles[0])
     sum_data = np.zeros((25,5)) * np.nan
     sum_data[0, 0] = t1-t0
     sum_data[1, 0] = E_err
@@ -108,15 +107,15 @@ def run_model(config, mode, debug=0):
     np.save(f"output/{config['name']}/summary.npy", sum_data)
 
 
-    # with open(f"output/{config['name']}/run_notes.out", 'a+') as summary:
-    #     summary.write(f"Time elapsed: {t1-t0}\n")
+    with open(f"output/{config['name']}/run_notes.out", 'a+') as summary:
+        summary.write(f"Time elapsed: {t1-t0}\n")
         
-    #     summary.write(f"Energy Error: {E_err:.2e}\tE_i: {E0:.2e}\
-    #         \tE_f: {E1:.2e}\n")
+        summary.write(f"Energy Error: {E_err:.2e}\tE_i: {E0:.2e}\
+            \tE_f: {E1:.2e}\n")
         
-    #     summary.write(f"Angular Mom Err: {L_err:.2e}\t\
-    #                   L_i: ({Lx0:.2e}, {Ly0:.2e}, {Lz0:.2e})\t\
-    #                       L_f: ({Lx1:.2e}, {Ly1:.2e}, {Lz1:.2e})\n")
+        summary.write(f"Angular Mom Err: {L_err:.2e}\t\
+                      L_i: ({Lx0:.2e}, {Ly0:.2e}, {Lz0:.2e})\t\
+                          L_f: ({Lx1:.2e}, {Ly1:.2e}, {Lz1:.2e})\n")
         
     #     summary.write("\nStatistical Moments:\n")
     #     summary.write(f"{moments}\n")
@@ -127,7 +126,7 @@ def run_model(config, mode, debug=0):
     #     summary.write(f"Final second derivative: {second_f}\n")
 
         
-    #     o = sim.particles[2].calculate_orbit(primary=sim.particles[1])
+    #     o = sim.particles[2].orbit(primary=sim.particles[1])
     #     summary.write(f"Binary system orbital elements: a:{o.a}, e:{o.e}\n")
     
     del sim, log
