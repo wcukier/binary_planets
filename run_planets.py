@@ -86,8 +86,8 @@ def one_run(run_num):
             q = np.random.uniform(0.25, 0.5)
             cfg["binary"]["m1"] = q * mass_total
             cfg["binary"]["m2"] = (1 - q) * mass_total
-            cfg["binary"]["e"] = np.random.uniform(0, 0.3)
-            cfg["binary"]["e_sys"] = np.random.uniform(0,0.3)
+            cfg["binary"]["e"] = np.random.uniform(0, 0.4)
+            cfg["binary"]["e_sys"] = np.random.uniform(0, 0.4)
             cfg["binary"]["phase"] = np.random.uniform(-np.pi, np.pi)
 
             cfg["binary"]["Omega"] = np.random.uniform(-np.pi, np.pi)
@@ -96,13 +96,13 @@ def one_run(run_num):
 
             diff = np.abs(np.log10(system["gap"][1]) - np.log10(system["gap"][0]))
 
-            cfg["binary"]["a"] = 10 ** np.random.uniform(np.log10(system["gap"][0]) + 0.2*diff,
-                                                   np.log10(system["gap"][1]) - 0.2*diff)
+            cfg["binary"]["a"] = 10 ** np.random.uniform(np.log10(system["gap"][0]),
+                                                   np.log10(system["gap"][1]))
             r_hill = get_hill_radius(cfg["binary"]["a"],
                                     cfg["binary"]["e"],
                                     mass_total,
                                     cfg["m_star"])
-            cfg["binary"]["d"] = r_hill * np.random.uniform(.1, .8)
+            cfg["binary"]["d"] = r_hill * np.random.uniform(0, 1.5)
 
         else:
             cfg["binary"]["m1"] = 1e-20
