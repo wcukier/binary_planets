@@ -5,14 +5,14 @@ from .log import *
 import sys
 
 def orbital_charcteristics(m1, m2, d, e=0, phase=0, Omega=0, inc=0):
-    r1 = m2/(m1+m2)*d
-    r2 = m1/(m1+m2)*d
+    a1 = m2/(m1+m2)*d
+    a2 = m1/(m1+m2)*d
     
     print(f"m1: {m1}, m2: {m2}")
 
     
-    a1 = get_semi_major(r1, e, phase)
-    a2 = get_semi_major(r2, e, phase)
+    r1 = get_separation(a1, e, phase)
+    r2 = get_separation(a2, e, phase)
 
     T1 = np.sqrt(4*np.pi**2/(G_AU_YR_MSUN * (m1+m2)) * (a1+a2)**3)
     T2 = T1
@@ -66,6 +66,10 @@ def get_period(m1, m2, d, e=0, phase=0):
 def get_semi_major(r, e, theta):
     return r*(1 + e*np.cos(theta))/(1 - e**2)
 
+def get_separation(a, e, theta):
+    return (1 - e**2)/(1- e* np.cos(theta)) * a
+
+
 def get_velocity(r, a , e, T):
     return 2* np.pi * (a**2) * np.sqrt(1-e**2)/(r*T)
 
@@ -89,7 +93,7 @@ def init_sim(m_star, n_log=1000, integrator="whfast", dt=1e-4, n_particles=2):
      
 
 
-def init_binary_planet(sim, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=0, bin_inc=0):
+def init_binary_planet(sim, m_star, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=0, bin_inc=0):
 
     inc = np.pi - inc
     bin_inc = np.pi - bin_inc
@@ -101,7 +105,7 @@ def init_binary_planet(sim, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=
     [x1, v1], [x2, v2] = orbital_charcteristics(m1, m2, d, inc=inc, e=e, 
                                                 phase=phase, Omega=Omega)
 
-    _, [[x0, y0, z0], [vx0, vy0, vz0]] = orbital_charcteristics(1, m1+m2, a, 
+    _, [[x0, y0, z0], [vx0, vy0, vz0]] = orbital_charcteristics(m_star, m1+m2, a,
                                                                 inc=bin_inc,
                                                                 e=e_sys)
     print(f"a: {a}")

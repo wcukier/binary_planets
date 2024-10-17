@@ -24,7 +24,7 @@ def run_model(config, mode, debug=0):
         n_particles = n_secondary + 1 
         if mode==2: n_particles += 2
 
-        sim, log = init_sim(config.get("m_star", 1), 
+        sim, log = init_sim(config["m_star"],
                             config["n_log"],
                             config["integrator"],
                             config["dt"], 
@@ -32,6 +32,7 @@ def run_model(config, mode, debug=0):
 
         if mode==2:
             sim  = init_binary_planet(  sim,  
+                                        config["m_star"],
                                         binary["m1"],
                                         binary["m2"],
                                         binary["d"], 
