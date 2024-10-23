@@ -10,3 +10,5 @@ old_logs/*
 *.eps
 .DS_Store
 *.pdf
+.ipynb_checkpoints/*
+scripts/.ipynb_checkpoints/*
