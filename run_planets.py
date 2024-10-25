@@ -103,7 +103,7 @@ def one_run(run_num):
                 np.log10(system["gap"][0]), np.log10(system["gap"][1])
             )
             r_hill = get_hill_radius(
-                cfg["binary"]["a"], cfg["binary"]["e"], mass_total, cfg["m_star"]
+                cfg["binary"]["a"], cfg["binary"]["e_sys"], mass_total, cfg["m_star"]
             )
             cfg["binary"]["d"] = r_hill * np.random.uniform(0, 1.5)
 
