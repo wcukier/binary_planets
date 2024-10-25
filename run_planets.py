@@ -87,8 +87,8 @@ def one_run(run_num):
             q = np.random.uniform(0, 0.5)
             cfg["binary"]["m1"] = q * mass_total
             cfg["binary"]["m2"] = (1 - q) * mass_total
-            cfg["binary"]["e"] = np.random.uniform(0, 0.4)
-            cfg["binary"]["e_sys"] = np.random.uniform(0, 0.4)
+            cfg["binary"]["e"] = np.random.uniform(0, 1)
+            cfg["binary"]["e_sys"] = np.random.uniform(0, 1)
             cfg["binary"]["phase"] = np.random.uniform(-np.pi, np.pi)
 
             cfg["binary"]["Omega"] = np.random.uniform(-np.pi, np.pi)
