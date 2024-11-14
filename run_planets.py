@@ -10,7 +10,8 @@ import numpy as np
 from multiprocessing import Pool
 
 
-global config
+global cfg_name
+global cfg_file
 global mode
 global pl_num
 compact_sys = np.load("data/compact_systems_run_composite.npy", allow_pickle=True)
@@ -26,6 +27,12 @@ def one_run(run_num):
     seed = seq[run_num]
     print(f"Seed: {seed}")
     np.random.seed(seed)
+
+    with open(cfg_file) as f:
+        config = json.load(f)
+    if cfg_name:
+        config["name"] = cfg_name
+
     cfg = dict(config)
     sys_num = pl_num  # np.random.randint(n_sys)
     batch_num = int(int(run_num) / n_sys) + 1
@@ -133,9 +140,13 @@ if __name__ == "__main__":
     try:
         print(f"Base Config file: {sys.argv[1]}", file=sys.stderr)
         with open(sys.argv[1]) as f:
+            cfg_file = sys.argv[1]
             config = json.load(f)
         if len(sys.argv) > 2:
             config["name"] = sys.argv[2]
+            cfg_name = sys.argv[2]
+        else:
+            cfg_name = None
 
         mode = int(sys.argv[3])  # 0 for no inj, 1 for single inj, 2 for binary inj
         pl_num = int(sys.argv[4])
