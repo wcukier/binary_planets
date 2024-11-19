@@ -59,7 +59,10 @@ def run_model(config, mode, debug=0):
             
             run_notes.write(f"Added secondary_{i}.\n")
             run_notes.write(f"# of particles: sim")
-    
+        run_notes.write("*************************************************\n\n")
+        run_notes.write(sim.status())
+
+
     
     with open(f"output/{config['name']}/config.json", "w+") as cf:
         json.dump(config, cf)
