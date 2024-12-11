@@ -159,5 +159,8 @@ if __name__ == "__main__":
         print(f"Error was {e}")
         raise
 
-    with Pool() as p:
-        p.map(one_run, range(0, 2000))
+    for i in range(1000):
+        one_run(i)
+
+    # with Pool() as p:
+    #     p.map(one_run, range(0, 2000))
