@@ -80,7 +80,8 @@ def get_hill_radius(a, e, m, m_star):
 
 
 
-def init_sim(m_star, n_log=1000, integrator="whfast", dt=1e-4, n_particles=2):
+def init_sim(m_star, n_log=1000, integrator="whfast",
+             dt=1e-4, n_particles=2, run_notes=False):
     sim=rebound.Simulation()
     sim.units = ('yr', 'AU', 'Msun')
     sim.integrator = integrator
@@ -89,11 +90,14 @@ def init_sim(m_star, n_log=1000, integrator="whfast", dt=1e-4, n_particles=2):
     sim.ri_whfast.corrector = 11
     sim.add(m=m_star)
     log = init_log(n_log, n_particles)
+
     return sim, log
      
 
 
-def init_binary_planet(sim, m_star, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega=0, inc=0, bin_inc=0):
+def init_binary_planet(sim, m_star, m1, m2, d, a=1, e=0,
+                       e_sys=0, phase=0, Omega=0, inc=0,
+                       bin_inc=0, run_notes=None):
 
     inc = np.pi - inc
     bin_inc = np.pi - bin_inc
@@ -108,12 +112,8 @@ def init_binary_planet(sim, m_star, m1, m2, d, a=1, e=0, e_sys=0, phase=0, Omega
     _, [[x0, y0, z0], [vx0, vy0, vz0]] = orbital_charcteristics(m_star, m1+m2, a,
                                                                 inc=bin_inc,
                                                                 e=e_sys)
-    print(f"a: {a}")
-    print(f"inc: {inc}\tbin_inc: {bin_inc}")
-    print("sys: ",[[x0, y0, z0], [vx0, vy0, vz0]])
-    print("m1: ",x1, v1)
-    print("m2: ",x2, v2)
-
+    if run_notes:
+        run_notes.write(f"e: {e}\t e_sys:{e_sys}")
 
 
     sim.add(m=m1, 

@@ -42,7 +42,8 @@ def run_model(config, mode, debug=0):
                                         binary["phase"], 
                                         binary["Omega"],
                                         binary["inc"],
-                                        binary["bin_inc"]
+                                        binary["bin_inc"],
+                                        run_notes=run_notes
                                         )
             
     
