@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from os import sys
 
 def init_log(n_log, n_particles):
-    return np.zeros((n_log, n_particles-1, 6)), 0
+    return np.zeros((n_log, n_particles-1, 6)), np.zeros(n_log), 0
 
 def get_log_len(log):
     return log[0].shape[0]
@@ -13,7 +13,7 @@ def get_log_len(log):
 def log_elements(sim, log, mode):
     sim.status()
     particles = sim.particles
-    elements, t_step = log
+    elements, distances, t_step = log
     n_log, n_particles, _ = elements.shape
     n_particles=len(particles)
     print(f"n_particles: {n_particles}")
@@ -35,17 +35,25 @@ def log_elements(sim, log, mode):
             if (o.a < 0) or (o.a > 5) or (o.e < 0) or (o.e > 1):
                 halt +=1
 
+    d = particles[1] ** particles[2]
+    distances[t_step] = d
+    if mode == 2:
+        if d > elements[t_step, 0][0]/2:
+            halt += 1
+
+
     t_step += 1
     # halt = o.a < 0
     print("WARNING, binary bound check off")
-    return [elements, t_step], halt
+    return [elements, distances, t_step], halt
 
-def save_log(log, file="output/elements.npy"):
-    elements, _ = log
-    np.save(file, elements)
+def save_log(log, file="output"):
+    elements, distances, _ = log
+    np.save(file+"/elements.npy", elements)
+    np.save(file+"/distances.npy", distances)
     
-def calc_moments(log, file=False):
-    elements, _ = log
+def calc_moments(log, file=None):
+    elements, _, _= log
     n_log, n_particles, n_elements = elements.shape
     summary_stats = np.zeros((n_particles, n_elements-1, 4))
     for i in range(n_particles):
@@ -56,7 +64,7 @@ def calc_moments(log, file=False):
     return summary_stats
 
 def plot_corner(log, file):
-    elements, _ = log
+    elements, _, _ = log
     corner.corner(np.hstack((elements[:,0,:5], elements[:,1,:5])), 
                   range=[.999]*10, 
                   labels=["a1", "e1", "inc1", "Omega1", "omega1", 
@@ -65,7 +73,7 @@ def plot_corner(log, file):
     plt.close()
     
 def get_derivatives(log):
-    elements, _ = log
+    elements, _, _= log
     decile = int(round(elements.shape[0] / 10))
     first_i = np.mean((elements[:decile-2, :, :5] - elements[2:decile, :, :5]) 
                       / np.mean(elements[:decile-2, :, 5] - elements[2:decile, :, 5]), 
