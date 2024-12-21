@@ -21,64 +21,64 @@ def run_model(config, mode, debug=0):
         binary = config["binary"]
         n_secondary = config["n_secondary"]
 
-        n_particles = n_secondary + 1 
+        n_particles = n_secondary + 1
         if mode==2: n_particles += 2
 
         sim, log = init_sim(config["m_star"],
                             config["n_log"],
                             config["integrator"],
-                            config["dt"], 
+                            config["dt"],
                             n_particles)
 
         if mode==2:
-            sim  = init_binary_planet(  sim,  
+            sim  = init_binary_planet(  sim,
                                         config["m_star"],
                                         binary["m1"],
                                         binary["m2"],
-                                        binary["d"], 
-                                        binary["a"], 
-                                        binary["e"], 
+                                        binary["d"],
+                                        binary["a"],
+                                        binary["e"],
                                         binary["e_sys"],
-                                        binary["phase"], 
+                                        binary["phase"],
                                         binary["Omega"],
                                         binary["inc"],
                                         binary["bin_inc"],
                                         run_notes=run_notes
                                         )
             
-    
+
         n_secondary = config["n_secondary"]
         for i in range(int(n_secondary)):
             sec = config[f"secondary_{i}"]
             sim = init_single_planet(sim,
-                                     sec["m"], 
-                                     sec["a"], 
-                                     sec["e"], 
+                                     sec["m"],
+                                     sec["a"],
+                                     sec["e"],
                                      sec["inc"],
                                      sec["omega"],
                                      sec["Omega"])
-            
+
             run_notes.write(f"Added secondary_{i}.\n")
             run_notes.write(f"# of particles: sim")
         run_notes.write("*************************************************\n\n")
         # run_notes.write(sim.status())
 
 
-    
+
     with open(f"output/{config['name']}/config.json", "w+") as cf:
         json.dump(config, cf)
-    
+
     E0 = sim.energy()
     Lx0, Ly0, Lz0, = sim.angular_momentum()
-    
+
     if debug == 1:
         return sim
-    
+
     t0 = time.time()
     simulate(sim, log, config["t_end"], mode)
     t1 = time.time()
 
-    save_log(log, f"output/{config['name']}/elements.npy")
+    save_log(log, f"output/{config['name']}")
 
     E1 = sim.energy()
     Lx1, Ly1, Lz1, = sim.angular_momentum()
@@ -89,7 +89,7 @@ def run_model(config, mode, debug=0):
     first_i, first_f, second_i, second_f = get_derivatives(log)
     
     moments = calc_moments(log)
-    
+
     try:
         o = sim.particles[2].orbit(primary=sim.particles[1])
     except Exception as e:
@@ -114,14 +114,14 @@ def run_model(config, mode, debug=0):
 
     with open(f"output/{config['name']}/run_notes.out", 'a+') as summary:
         summary.write(f"Time elapsed: {t1-t0}\n")
-        
+
         summary.write(f"Energy Error: {E_err:.2e}\tE_i: {E0:.2e}\
             \tE_f: {E1:.2e}\n")
-        
+
         summary.write(f"Angular Mom Err: {L_err:.2e}\t\
                       L_i: ({Lx0:.2e}, {Ly0:.2e}, {Lz0:.2e})\t\
                           L_f: ({Lx1:.2e}, {Ly1:.2e}, {Lz1:.2e})\n")
-        
+
     #     summary.write("\nStatistical Moments:\n")
     #     summary.write(f"{moments}\n")
     #     summary.write("\n====Derivatives====\n")
@@ -130,14 +130,14 @@ def run_model(config, mode, debug=0):
     #     summary.write(f"Initial second derivative: {second_i}\n")
     #     summary.write(f"Final second derivative: {second_f}\n")
 
-        
+
     #     o = sim.particles[2].orbit(primary=sim.particles[1])
     #     summary.write(f"Binary system orbital elements: a:{o.a}, e:{o.e}\n")
     
     del sim, log
     return None
 
-        
+
     # plot_corner(log, f"output/{config['name']}/corner.png")
 
 
@@ -165,7 +165,7 @@ if __name__ == "__main__":
         # print(f"{config[key]}", file=sys.stderr)
         print(type(val), file=sys.stderr)
         config[key] = float(val)
-        
+
     
 
     i = 1
@@ -183,9 +183,9 @@ if __name__ == "__main__":
     
     run_model(config)
 
-        
-    # T = get_period(config["m1"], config["m2"], config["d"], 
+
+    # T = get_period(config["m1"], config["m2"], config["d"],
     #                config["e"], config["phase"])
     # print(T)
-    # animate_separation(f"output/{config['name']}/end", sim, 
+    # animate_separation(f"output/{config['name']}/end", sim,
     #                    config['t_end'], config['t_end']+.2)

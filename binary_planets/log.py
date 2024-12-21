@@ -5,7 +5,10 @@ from matplotlib import pyplot as plt
 from os import sys
 
 def init_log(n_log, n_particles):
-    return np.zeros((n_log, n_particles-1, 6)), np.zeros(n_log), 0
+    elements = np.zeros((n_log, n_particles-1, 6)) * np.nan
+    distances = np.zeros(n_log) * np.nan
+
+    return elements, distances, 0
 
 def get_log_len(log):
     return log[0].shape[0]
