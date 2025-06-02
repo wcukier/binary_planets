@@ -10,6 +10,9 @@ import os
 import datetime
 
 
+
+
+
 def run_model(config, mode, debug=0):
     with open(f"output/{config['name']}/run_notes.out", 'w+') as run_notes:
         run_notes.write(f"{sys.argv}\n")
@@ -75,7 +78,10 @@ def run_model(config, mode, debug=0):
         return sim
 
     t0 = time.time()
-    simulate(sim, log, config["t_end"], mode)
+    _, _, halt, t_end = simulate(sim, log, config["t_end"], mode)
+    if t_end < 5: return 1
+    else:
+        print(t_end, file=sys.stderr)
     t1 = time.time()
 
     save_log(log, f"output/{config['name']}")
@@ -95,24 +101,46 @@ def run_model(config, mode, debug=0):
     except Exception as e:
         print(e)
         o = sim.particles[2].orbit(primary=sim.particles[0])
-    sum_data = np.zeros((25,5)) * np.nan
-    sum_data[0, 0] = t1-t0
-    sum_data[1, 0] = E_err
-    sum_data[2, :2] = [E0, E1]
-    sum_data[3, 0] = L_err
-    sum_data[4, :3] = [Lx0, Ly0, Lz0]
-    sum_data[5, :3] = [Lx1, Ly1, Lz1]
-    sum_data[6:8, :] = first_i[:2]
-    sum_data[8:10, :] = first_f[:2]
-    sum_data[10:12, :] = second_i[:2]
-    sum_data[12:14, :] = second_f[:2]
-    sum_data[14:19, :4] = moments[0]
-    sum_data[19:24, :4] = moments[1]
-    sum_data[24, :] = [o.a, o.e, o.inc, o.Omega, o.omega]
-    np.save(f"output/{config['name']}/summary.npy", sum_data)
-
+#     sum_data = np.zeros((26,5)) * np.nan
+#     sum_data[0, 0] = t1-t0
+#     sum_data[1, 0] = E_err
+#     sum_data[2, :2] = [E0, E1]
+#     sum_data[3, 0] = L_err
+#     sum_data[4, :3] = [Lx0, Ly0, Lz0]
+#     sum_data[5, :3] = [Lx1, Ly1, Lz1]
+#     sum_data[6:8, :] = first_i[:2]
+#     sum_data[8:10, :] = first_f[:2]
+#     sum_data[10:12, :] = second_i[:2]
+#     sum_data[12:14, :] = second_f[:2]
+#     sum_data[14:19, :4] = moments[0]
+#     sum_data[19:24, :4] = moments[1]
+#     sum_data[24, :] = [o.a, o.e, o.inc, o.Omega, o.omega]
+#     sum_data[26, 0] = t_end
+#     np.save(f"output/{config['name']}/summary.npy", sum_data)
+    
+    
+    with open(f"output/{config['name']}/summary.json", "w+") as cf:
+        sum_data = {}
+        
+        sum_data["t_elapsed"] = t1-t0
+        sum_data["E_Err"] = E_err
+        sum_data["E_0"] = E0
+        sum_data["E_1"] = E1
+        sum_data["L_err"] = L_err
+        sum_data["L_i"] = [Lx0, Ly0, Lz0]
+        sum_data["L_f"] = [Lx1, Ly1, Lz1]
+        sum_data["Final_elements"] = [o.a, o.e, o.inc, o.Omega, o.omega]
+        sum_data["t_end"] = t_end
+        sum_data["halt"] = halt
+        
+        json.dump(sum_data, cf)
+    
+    
+    
 
     with open(f"output/{config['name']}/run_notes.out", 'a+') as summary:
+        summary.write(f"{halt}\n")
+        summary.write(f"t_end: {t_end}")
         summary.write(f"Time elapsed: {t1-t0}\n")
 
         summary.write(f"Energy Error: {E_err:.2e}\tE_i: {E0:.2e}\
@@ -121,6 +149,8 @@ def run_model(config, mode, debug=0):
         summary.write(f"Angular Mom Err: {L_err:.2e}\t\
                       L_i: ({Lx0:.2e}, {Ly0:.2e}, {Lz0:.2e})\t\
                           L_f: ({Lx1:.2e}, {Ly1:.2e}, {Lz1:.2e})\n")
+        
+        summary.write(f"Simulation Time: {sim.t}")
 
     #     summary.write("\nStatistical Moments:\n")
     #     summary.write(f"{moments}\n")
@@ -135,7 +165,7 @@ def run_model(config, mode, debug=0):
     #     summary.write(f"Binary system orbital elements: a:{o.a}, e:{o.e}\n")
     
     del sim, log
-    return None
+    return 0
 
 
     # plot_corner(log, f"output/{config['name']}/corner.png")
@@ -181,7 +211,6 @@ if __name__ == "__main__":
             i += 1
     config["name"] = f"{config['name']}/{i}"
     
-    run_model(config)
 
 
     # T = get_period(config["m1"], config["m2"], config["d"],

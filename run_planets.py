@@ -14,31 +14,31 @@ global cfg_name
 global cfg_file
 global mode
 global pl_num
+global sim_time
+
 compact_sys = np.load("data/compact_systems_run_composite.npy", allow_pickle=True)
 # compact_sys = np.load("data/TOI-178.npy", allow_pickle=True)
 # compact_sys = np.load("data/Kepler-11.npy", allow_pickle=True)
 n_sys = len(compact_sys)
-n_runs = 10000
+n_runs = 5000
 seq = np.random.SeedSequence().generate_state(n_runs)
 
 
 # def one_run(run_num, config, mode, pl_num, debug=0):
-def one_run(run_num):
-    seed = seq[run_num]
-    print(f"Seed: {seed}")
-    np.random.seed(seed)
+def one_run(run_num, cfg):
 
-    with open(cfg_file) as f:
-        config = json.load(f)
-    if cfg_name:
-        config["name"] = cfg_name
+    
+#     with open(cfg_file) as f:
+#         config = json.load(f)
+#     if cfg_name:
+#         config["name"] = cfg_name
 
-    cfg = dict(config)
+#     cfg = dict(config)
     sys_num = pl_num  # np.random.randint(n_sys)
     batch_num = int(int(run_num) / n_sys) + 1
 
     system = compact_sys[sys_num]
-    cfg["name"] = f"{cfg['name']}/{system['name']}"
+#     cfg["name"] = f"{cfg['name']}/{system['name']}"
     print(
         f"Sys_Num: {sys_num} Run Number: {run_num}. Run Name: {cfg['name']}. Batch #: {batch_num}",
         file=sys.stderr,
@@ -47,6 +47,7 @@ def one_run(run_num):
     n_secondary = len(system["a"])
 
     cfg["n_secondary"] = n_secondary
+    cfg["t_end"] = sim_time
 
     if mode == 1:
         cfg["n_secondary"] += 1
@@ -74,18 +75,17 @@ def one_run(run_num):
         if mode == 1:
             j = n_secondary
             cfg[f"secondary_{j}"] = {}
-            cfg[f"secondary_{j}"]["m"] = np.random.normal(
-                np.mean(masses), np.std(masses)
+            # cfg[f"secondary_{j}"]["m"] = np.random.normal(
+            #     np.mean(masses), np.std(masses)
+            # )
+            cfg[f"secondary_{j}"]["m"] = np.random.uniform(0.38, 72)
+
+            cfg[f"secondary_{j}"]["a"] =10 ** np.random.uniform(
+                np.log10(system["gap"][0]), np.log10(system["gap"][1])
             )
 
-            diff = np.abs(system["gap"][1] - system["gap"][0])
-
-            cfg[f"secondary_{j}"]["a"] = np.random.uniform(
-                system["gap"][0] + 0.2 * diff, system["gap"][1] - 0.2 * diff
-            )
-
-            cfg[f"secondary_{j}"]["e"] = np.random.uniform(0, 0.3)
-            cfg[f"secondary_{j}"]["inc"] = 0  # np.random.uniform(-np.pi, np.pi)
+            cfg[f"secondary_{j}"]["e"] = np.random.uniform(0, 1)
+            cfg[f"secondary_{j}"]["inc"] = np.random.uniform(-np.pi, np.pi)
             cfg[f"secondary_{j}"]["omega"] = np.random.uniform(-np.pi, np.pi)
             cfg[f"secondary_{j}"]["Omega"] = np.random.uniform(-np.pi, np.pi)
 
@@ -94,17 +94,16 @@ def one_run(run_num):
             q = np.random.uniform(0, 0.5)
             cfg["binary"]["m1"] = q * mass_total
             cfg["binary"]["m2"] = (1 - q) * mass_total
-            cfg["binary"]["e"] = np.random.uniform(0, .1)
-            cfg["binary"]["e_sys"] = np.random.uniform(0, .1)
+            cfg["binary"]["e"] = np.random.uniform(0, 1)
+            cfg["binary"]["e_sys"] = np.random.uniform(0, 1)
             cfg["binary"]["phase"] = np.random.uniform(-np.pi, np.pi)
 
             cfg["binary"]["Omega"] = np.random.uniform(-np.pi, np.pi)
             cfg["binary"]["inc"] = np.random.uniform(
-                0, np.pi
-            )  # np.random.uniform(-np.pi, np.pi) #TODO
-            cfg["binary"]["bin_inc"] = 0  # np.random.uniform(-np.pi, np.pi) #TODO
+                -np.pi, np.pi
+            )  
+            cfg["binary"]["bin_inc"] = np.random.uniform(-np.pi, np.pi) 
 
-            diff = np.abs(np.log10(system["gap"][1]) - np.log10(system["gap"][0]))
 
             cfg["binary"]["a"] = 10 ** np.random.uniform(
                 np.log10(system["gap"][0]), np.log10(system["gap"][1])
@@ -112,29 +111,71 @@ def one_run(run_num):
             r_hill = get_hill_radius(
                 cfg["binary"]["a"], cfg["binary"]["e_sys"], mass_total, cfg["m_star"]
             )
-            cfg["binary"]["d"] = r_hill * np.random.uniform(0, 1.5)
+            cfg["binary"]["d"] = r_hill * np.random.uniform(0, 1.0)
 
         else:
             cfg["binary"]["m1"] = 1e-20
             cfg["binary"]["m2"] = 1e-20
 
-        i = 1
-        try:
-            os.mkdir(f"output/{cfg['name']}")
-        except:
-            pass
-        while True:
-            try:
-                os.mkdir(f"output/{cfg['name']}/{i}")
-                break
-            except:
-                i += 1
-        cfg["name"] = f"{cfg['name']}/{i}"
+        cfg["dt"] = 0.00001
+        cfg["integrator"] = "ias15"
+#         i = 1
+#         try:
+#             os.mkdir(f"output/{cfg['name']}")
+#         except:
+#             pass
+#         while True:
+#             try:
+#                 os.mkdir(f"output/{cfg['name']}/{i}")
+#                 break
+#             except:
+#                 i += 1
+#         cfg["name"] = f"{cfg['name']}/{i}"
 
         print(f"system configuration: {cfg}", file=sys.stderr)
-        run_model(cfg, mode)
-        return
+        return run_model(cfg, mode)
+        
 
+def run_dispatcher(run_num):
+    seed = seq[run_num]
+    print(f"Seed: {seed}", flush=True)
+    np.random.seed(seed)
+    
+    
+    with open(cfg_file) as f:
+        config = json.load(f)
+    if cfg_name:
+        config["name"] = cfg_name
+
+    cfg = dict(config)
+    
+    sys_num = pl_num  # np.random.randint(n_sys)
+    batch_num = int(int(run_num) / n_sys) + 1
+
+    system = compact_sys[sys_num]
+    cfg["name"] = f"{cfg['name']}/{system['name']}"
+    
+    i = 0
+    try:
+        os.mkdir(f"output/{cfg['name']}")
+    except:
+        pass
+    while True:
+        try:
+            os.mkdir(f"output/{cfg['name']}/{i}")
+            break
+        except:
+            i += 1
+    cfg["name"] = f"{cfg['name']}/{i}"
+    
+
+        
+    early_stop = 1
+    while early_stop:
+        early_stop = one_run(run_num, cfg)
+        if early_stop:
+            print(f"{run_num}: Early stopped.  Retrying...", file=sys.stderr)
+    
 
 if __name__ == "__main__":
     try:
@@ -147,13 +188,20 @@ if __name__ == "__main__":
             cfg_name = sys.argv[2]
         else:
             cfg_name = None
+            
+
 
         mode = int(sys.argv[3])  # 0 for no inj, 1 for single inj, 2 for binary inj
-        pl_num = int(sys.argv[4])
+        pl_num = int(sys.argv[4]) - 1 # bsub doesn't allow for a index of 0
         print(
             f"Simulating {compact_sys[pl_num]['name']}, mode = {mode}", file=sys.stderr
         )
 
+        if len(sys.argv) > 5:
+            sim_time = int(sys.argv[5])
+        else:
+            sim_time = 100_000
+        
     except Exception as e:
         print("Error in loading config file")
         print(f"Error was {e}")
@@ -163,4 +211,4 @@ if __name__ == "__main__":
     #     one_run(i)
 
     with Pool() as p:
-        p.map(one_run, range(0, 2000))
+        p.map(run_dispatcher, range(0, n_runs))

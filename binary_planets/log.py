@@ -13,15 +13,16 @@ def init_log(n_log, n_particles):
 def get_log_len(log):
     return log[0].shape[0]
 
+
 def log_elements(sim, log, mode):
-    sim.status()
+    # sim.status()
     particles = sim.particles
     elements, distances, t_step = log
     n_log, n_particles, _ = elements.shape
     n_particles=len(particles)
     print(f"n_particles: {n_particles}")
 
-    halt = 0
+    halt = ""
     for i in range(n_particles)[1:]:
         p = particles[i]
         if i == 0:
@@ -35,19 +36,20 @@ def log_elements(sim, log, mode):
         elements[t_step, i-1] = [o.a, o.e, o.inc, o.Omega, o.omega, sim.t]
         
         if p.m > 1e-15:
-            if (o.a < 0) or (o.a > 5) or (o.e < 0) or (o.e > 1):
-                halt +=1
+            if (o.a < 0) or (o.a > 5):
+                halt += "semi-major axis out of bounds\t"
+            elif (o.e < 0) or (o.e > 1):
+                halt += "eccentricity out of bounds\t"
 
     d = particles[1] ** particles[2]
     distances[t_step] = d
     if mode == 2:
         if d > elements[t_step, 0][0]/2:
-            halt += 1
+            halt += "binary not bound\t"
 
 
     t_step += 1
     # halt = o.a < 0
-    print("WARNING, binary bound check off")
     return [elements, distances, t_step], halt
 
 def save_log(log, file="output"):

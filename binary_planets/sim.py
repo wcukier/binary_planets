@@ -109,6 +109,7 @@ def init_binary_planet(sim, m_star, m1, m2, d, a=1, e=0,
     [x1, v1], [x2, v2] = orbital_charcteristics(m1, m2, d, inc=inc, e=e, 
                                                 phase=phase, Omega=Omega)
 
+    # oribtal charateristics of the combined planetary system
     _, [[x0, y0, z0], [vx0, vy0, vz0]] = orbital_charcteristics(m_star, m1+m2, a,
                                                                 inc=bin_inc,
                                                                 e=e_sys)
@@ -137,13 +138,24 @@ def init_single_planet(sim, m, a, e, inc, omega, Omega):
 
 def simulate(sim, log, t_end, mode):
     n_log = get_log_len(log)
-    
-    for t in np.linspace(0, t_end, n_log):
+        
+    for t in np.linspace(0, 10, 100):
         sim.integrate(t, exact_finish_time=0)
         log, halt = log_elements(sim, log, mode)
-        if halt > 0:
+        if halt:
             print("Unstable system.  Stopping...", file=sys.stderr)
-            break
+            return sim, log, halt, t
+        log[2] = 1
     
-    return sim, log
+        
+    for t in np.linspace(0, t_end, n_log)[1:]:
+        sim.integrate(t, exact_finish_time=0)
+        log, halt = log_elements(sim, log, mode)
+        if halt:
+            print("Unstable system.  Stopping...", file=sys.stderr)
+            return sim, log, halt, t
+    return sim, log, halt, t
+
+    
+    
 

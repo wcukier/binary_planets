@@ -42,7 +42,7 @@ def get_eccen(sys):
     his = sys["e_upper"]
     es = np.zeros(len(mids))
     for i in range(len(es)):
-        if (np.isnan(mids[i])) + np.isnan(los[i]) + np.isnan(his[i]):
+        if (np.isnan(mids[i]) + np.isnan(los[i]) + np.isnan(his[i])):
             x = np.random.uniform(E_CDF_MIN, E_CDF_MAX)
             # es[i] = e_func(x)
             es[i]=0
@@ -50,7 +50,8 @@ def get_eccen(sys):
             # e[i] = 0
             while True:
                 es[i] = draw_rv(mids[i], los[i], his[i])
-                if es[i]>0: break
+#                 print(es[i])
+                if es[i]>=0: break
 
     return es
 
@@ -93,7 +94,7 @@ def get_mass(sys):
                 print(mass[i])
                 if ~np.isnan(mass_mid[i]):
                     if mass[i] > mass_mid[i]: override_break = 1
-            else:
+            else: #TODO: does this infinite loop?
                 mass[i] = draw_rv(mass_mid[i], mass_lower[i], mass_upper[i])
                 print(f"In mass rv loop {mass[i]}")
                 if mass[i] < 0:
