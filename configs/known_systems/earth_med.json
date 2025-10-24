@@ -1,0 +1,36 @@
+{
+    "binary":{
+        "m1":1,
+        "m2":0.0123,
+        "d": 0.00257,
+        "e": 0,
+        "a": 1,
+        "e_sys": 0,
+        "phase": 0,
+        "Omega": 0,
+        "inc": 0},
+
+    "n_secondary": 0,
+    "secondary_0":{
+        "m": 1,
+        "a":0.3,
+        "e":0,
+        "inc":0,
+        "omega":0,
+        "Omega":0
+    },
+    "secondary_1":{
+        "m": 1,
+        "a":1.7,
+        "e":0,
+        "inc":0,
+        "omega":0,
+        "Omega":0
+    },
+
+    "n_log": 1000,
+    "integrator": "leapfrog",
+    "dt": 0.0001,
+    "t_end": 100000,
+    "name": "known_systems/earth"
+    }

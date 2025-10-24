@@ -48,8 +48,14 @@ def run_model(config, mode, debug=0):
                                         binary["bin_inc"],
                                         run_notes=run_notes
                                         )
+#             sim.N_active = 3
+#         elif mode==1:
+#             sim.N_active = 2
+#         else:
+#             sim.N_active = 1
             
-
+#         sim.testparticle_type = 1
+        
         n_secondary = config["n_secondary"]
         for i in range(int(n_secondary)):
             sec = config[f"secondary_{i}"]
@@ -64,7 +70,7 @@ def run_model(config, mode, debug=0):
             run_notes.write(f"Added secondary_{i}.\n")
             run_notes.write(f"# of particles: sim")
         run_notes.write("*************************************************\n\n")
-        # run_notes.write(sim.status())
+#         sim.status()
 
 
 

@@ -14,13 +14,14 @@ global cfg_name
 global cfg_file
 global mode
 global pl_num
-global sim_time
+global dt
+global t_end
 
 compact_sys = np.load("data/compact_systems_run_composite.npy", allow_pickle=True)
 # compact_sys = np.load("data/TOI-178.npy", allow_pickle=True)
 # compact_sys = np.load("data/Kepler-11.npy", allow_pickle=True)
 n_sys = len(compact_sys)
-n_runs = 5000
+n_runs = 300
 seq = np.random.SeedSequence().generate_state(n_runs)
 
 
@@ -47,7 +48,7 @@ def one_run(run_num, cfg):
     n_secondary = len(system["a"])
 
     cfg["n_secondary"] = n_secondary
-    cfg["t_end"] = sim_time
+    cfg["t_end"] = t_end
 
     if mode == 1:
         cfg["n_secondary"] += 1
@@ -117,8 +118,8 @@ def one_run(run_num, cfg):
             cfg["binary"]["m1"] = 1e-20
             cfg["binary"]["m2"] = 1e-20
 
-        cfg["dt"] = 0.00001
-        cfg["integrator"] = "ias15"
+        cfg["dt"] = dt
+        cfg["integrator"] = "whfast"
 #         i = 1
 #         try:
 #             os.mkdir(f"output/{cfg['name']}")
@@ -164,8 +165,10 @@ def run_dispatcher(run_num):
         try:
             os.mkdir(f"output/{cfg['name']}/{i}")
             break
-        except:
+        except Exception as e:
             i += 1
+            if i > 40000:
+                raise(e)
     cfg["name"] = f"{cfg['name']}/{i}"
     
 
@@ -197,10 +200,16 @@ if __name__ == "__main__":
             f"Simulating {compact_sys[pl_num]['name']}, mode = {mode}", file=sys.stderr
         )
 
+        
         if len(sys.argv) > 5:
-            sim_time = int(sys.argv[5])
+            dt = float(sys.argv[5])
         else:
-            sim_time = 100_000
+            dt = 1e-5
+            
+        if len(sys.argv) > 6:
+            t_end = float(sys.argv[6])
+        else:
+            t_end = 1_000_000
         
     except Exception as e:
         print("Error in loading config file")
